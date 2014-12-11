@@ -22,11 +22,30 @@ class Paddle
   end
 end
 
+class Ball
+  def initialize(window, x, y)
+    @window = window
+    @color = Gosu::Color::GREEN
+    @x = x
+    @y = y
+    @width = 5
+    @height = 5
+  end
+
+  def update
+  end
+
+  def draw
+    @window.draw_quad(@x, @y, @color, @x, @y + @height, @color, @x + @width, @y + @height, @color, @x + @width, @y, @color)
+  end
+end
+
 class PongGame < Gosu::Window
   def initialize(width=800, height=600, fullscreen=false)
     super
     @paddle1 = Paddle.new(self, 10, Gosu::KbE, Gosu::KbD)
     @paddle2 = Paddle.new(self, width - 20, Gosu::KbUp, Gosu::KbDown)
+    @ball = Ball.new(self, width/2, height/2)
   end
 
   def button_down(id)
@@ -36,11 +55,13 @@ class PongGame < Gosu::Window
   def update
     @paddle1.update
     @paddle2.update
+    @ball.update
   end
 
   def draw
     @paddle1.draw
     @paddle2.draw
+    @ball.draw
   end
 end
 

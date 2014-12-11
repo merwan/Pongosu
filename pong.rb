@@ -20,9 +20,16 @@ class Paddle
   def draw
     @window.draw_quad(@x, @y, @color, @x, @y + @height, @color, @x + @width, @y + @height, @color, @x + @width, @y, @color)
   end
+
+  def collide?(ball)
+    return @x <= ball.x && ball.x <= @x + @width &&
+           @y <= ball.y && ball.y <= @y + @height
+  end
 end
 
 class Ball
+  attr_reader :x, :y
+
   def initialize(window, x, y)
     @window = window
     @color = Gosu::Color::GREEN
@@ -30,13 +37,19 @@ class Ball
     @y = y
     @width = 5
     @height = 5
+    @velocity = 5
   end
 
   def update
+    @x += @velocity
   end
 
   def draw
     @window.draw_quad(@x, @y, @color, @x, @y + @height, @color, @x + @width, @y + @height, @color, @x + @width, @y, @color)
+  end
+
+  def bounce
+    @velocity = -@velocity
   end
 end
 
@@ -55,6 +68,9 @@ class PongGame < Gosu::Window
   def update
     @paddle1.update
     @paddle2.update
+    if @paddle1.collide?(@ball) || @paddle2.collide?(@ball)
+      @ball.bounce
+    end
     @ball.update
   end
 

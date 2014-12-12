@@ -35,8 +35,6 @@ class Ball
     @color = Gosu::Color::GREEN
     @width = 5
     @height = 5
-    @vx = 5
-    @vy = 3
   end
 
   def update
@@ -56,6 +54,10 @@ class Ball
   def reset
     @x = @window.width / 2
     @y = @window.height / 2
+    @vx = 5
+    @vy = 3
+    @vx = -@vx if Random.rand(2) == 1
+    @vy = -@vy if Random.rand(2) == 1
   end
 
   private
@@ -117,10 +119,9 @@ class PongGame < Gosu::Window
   end
 
   def update
-    return if @pause
-
     @paddle1.update
     @paddle2.update
+    return if @pause
     update_collisions
     @ball.update
     update_score

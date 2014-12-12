@@ -29,17 +29,21 @@ end
 
 class Ball
   attr_reader :x, :y
+  ACCELERATION = 0.003
 
   def initialize(window)
     @window = window
     @color = Gosu::Color::GREEN
     @width = 5
     @height = 5
+    @xdir = 1
+    @ydir = 1
   end
 
   def update
-    @x += @vx
-    @y += @vy
+    @vx += ACCELERATION
+    @x += @xdir * @vx
+    @y += @ydir * @vy
     bounce_on_wall if collide_wall?
   end
 
@@ -48,7 +52,7 @@ class Ball
   end
 
   def bounce
-    @vx = -@vx
+    @xdir = -@xdir
   end
 
   def reset
@@ -56,14 +60,14 @@ class Ball
     @y = @window.height / 2
     @vx = 5
     @vy = 3
-    @vx = -@vx if Random.rand(2) == 1
-    @vy = -@vy if Random.rand(2) == 1
+    @xdir = -1 if Random.rand(2) == 1
+    @ydir = -1 if Random.rand(2) == 1
   end
 
   private
 
   def bounce_on_wall
-    @vy = -@vy
+    @ydir = -@ydir
   end
 
   def collide_wall?
@@ -122,8 +126,8 @@ class PongGame < Gosu::Window
     @paddle1.update
     @paddle2.update
     return if @pause
-    update_collisions
     @ball.update
+    update_collisions
     update_score
   end
 

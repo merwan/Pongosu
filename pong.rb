@@ -72,13 +72,16 @@ class PongGame < Gosu::Window
     @paddle1 = Paddle.new(self, 10, Gosu::KbE, Gosu::KbD)
     @paddle2 = Paddle.new(self, width - 20, Gosu::KbUp, Gosu::KbDown)
     @ball = Ball.new(self, width/2, height/2)
+    @pause = true
   end
 
   def button_down(id)
     self.close if id == Gosu::KbEscape
+    @pause = false if id == Gosu::KbSpace
   end
 
   def update
+    return if @pause
     @paddle1.update
     @paddle2.update
     if @paddle1.collide?(@ball) || @paddle2.collide?(@ball)

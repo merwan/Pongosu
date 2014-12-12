@@ -66,12 +66,36 @@ class Ball
   end
 end
 
+class Score
+  def initialize(window)
+    @window = window
+    @player1 = 0
+    @player2 = 0
+  end
+
+  def draw
+    draw_score(@player1, :player1)
+    draw_score(@player2, :player2)
+  end
+
+  def draw_score(score, player)
+    image = Gosu::Image.from_text(@window, score, Gosu::default_font_name, 100)
+    if player == :player1
+      xoffset = -2*image.width
+    else
+      xoffset = image.width
+    end
+    image.draw(@window.width / 2 + xoffset, 10, 0)
+  end
+end
+
 class PongGame < Gosu::Window
   def initialize(width=800, height=600, fullscreen=false)
     super
     @paddle1 = Paddle.new(self, 10, Gosu::KbE, Gosu::KbD)
     @paddle2 = Paddle.new(self, width - 20, Gosu::KbUp, Gosu::KbDown)
     @ball = Ball.new(self, width/2, height/2)
+    @score = Score.new(self)
     @pause = true
   end
 
@@ -82,6 +106,7 @@ class PongGame < Gosu::Window
 
   def update
     return if @pause
+
     @paddle1.update
     @paddle2.update
     if @paddle1.collide?(@ball) || @paddle2.collide?(@ball)
@@ -94,6 +119,7 @@ class PongGame < Gosu::Window
     @paddle1.draw
     @paddle2.draw
     @ball.draw
+    @score.draw
   end
 end
 

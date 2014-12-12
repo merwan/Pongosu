@@ -1,3 +1,3 @@
-# Freekick
+# Pongosu
 
-A freekick game in Ruby with Gosu
+A pong game in Ruby with Gosu

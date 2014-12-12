@@ -30,11 +30,9 @@ end
 class Ball
   attr_reader :x, :y
 
-  def initialize(window, x, y)
+  def initialize(window)
     @window = window
     @color = Gosu::Color::GREEN
-    @x = x
-    @y = y
     @width = 5
     @height = 5
     @vx = 5
@@ -53,6 +51,11 @@ class Ball
 
   def bounce
     @vx = -@vx
+  end
+
+  def reset
+    @x = @window.width / 2
+    @y = @window.height / 2
   end
 
   private
@@ -87,6 +90,14 @@ class Score
     end
     image.draw(@window.width / 2 + xoffset, 10, 0)
   end
+
+  def point_player1
+    @player1 += 1
+  end
+
+  def point_player2
+    @player2 += 1
+  end
 end
 
 class PongGame < Gosu::Window
@@ -94,7 +105,8 @@ class PongGame < Gosu::Window
     super
     @paddle1 = Paddle.new(self, 10, Gosu::KbE, Gosu::KbD)
     @paddle2 = Paddle.new(self, width - 20, Gosu::KbUp, Gosu::KbDown)
-    @ball = Ball.new(self, width/2, height/2)
+    @ball = Ball.new(self)
+    @ball.reset
     @score = Score.new(self)
     @pause = true
   end
@@ -109,10 +121,31 @@ class PongGame < Gosu::Window
 
     @paddle1.update
     @paddle2.update
+    update_collisions
+    @ball.update
+    update_score
+  end
+
+  def update_collisions
     if @paddle1.collide?(@ball) || @paddle2.collide?(@ball)
       @ball.bounce
     end
-    @ball.update
+  end
+
+  def update_score
+    if @ball.x < 0
+      @score.point_player2
+      new_point
+    end
+    if @ball.x > self.width
+      @score.point_player1
+      new_point
+    end
+  end
+
+  def new_point
+    @pause = true
+    @ball.reset
   end
 
   def draw

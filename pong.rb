@@ -37,11 +37,14 @@ class Ball
     @y = y
     @width = 5
     @height = 5
-    @velocity = 5
+    @vx = 5
+    @vy = 3
   end
 
   def update
-    @x += @velocity
+    @x += @vx
+    @y += @vy
+    bounce_on_wall if collide_wall?
   end
 
   def draw
@@ -49,7 +52,17 @@ class Ball
   end
 
   def bounce
-    @velocity = -@velocity
+    @vx = -@vx
+  end
+
+  private
+
+  def bounce_on_wall
+    @vy = -@vy
+  end
+
+  def collide_wall?
+    @y <= 0 || @y >= @window.height
   end
 end
 
